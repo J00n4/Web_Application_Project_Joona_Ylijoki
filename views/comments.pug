@@ -1,0 +1,24 @@
+extends layout 
+
+block content 
+    h1 Comments 
+    //form(action="" id="comment-form" method="GET")
+    button: a(href="/users/comment/add" id="comment-form") Add post
+        //table
+            tr 
+                th Username
+                th Comment
+            each comment, index in comments 
+                tr 
+                    //td= index 
+                    td= comment["username"]
+                    td= comment["comment"]
+                    td: button: a(href="/comment/add") Add comment
+                    //button: a(href="/comment/add") Add comment
+    each comment, index in comments
+        div(id="post")
+            p= comment._id
+            p= "User:" + comment.username 
+            p= comment.comment 
+            p= "*************************************************************"
+    script(src="/javascripts/commentwall.js")
