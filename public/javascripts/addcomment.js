@@ -7,19 +7,18 @@ if(document.readyState !== "loading") {
 }
 
 function initializeCode() {
-    console.log(document.getElementById("add-comment"));
+    //Setting eventListener to a button in the "Add post" page
     document.getElementById("add-comment").addEventListener("submit", addComment);
 }
 
 
 function addComment(event) {
     event.preventDefault();
-    console.log("Add Comment button click function is here");
     const authToken = localStorage.getItem("auth_token");
-    console.log("This is from addComment clicking function: " + authToken);
     var formData = new FormData(event.target);
 
-
+    //Sending the information from "Add post" pages input fields to the post route where
+    //the post is created (saved to the database). Information is sent in formData format.
     fetch("/users/comment/add", {
         method: "POST",
         headers: {
@@ -30,9 +29,10 @@ function addComment(event) {
     .then((response) => response.text())
     .then((page) => {
         console.log(page);
+        //Redirecting the user to "Posts" page at url /content
         window.location.href = "/content";
     })
-    .catch((e) => {
+    .catch((e) => { //If the user runs to an error, we log it into the console
         console.log("error" + e);
     })
 

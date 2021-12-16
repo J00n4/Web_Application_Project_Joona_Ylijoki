@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+    h1 Comments 
+    //Comments for a specific post
+    each subcomment, motherID in subcomments
+            div(id="post")
+                p= "User:" + subcomment.username 
+                p= subcomment.subcomment 
+                p= "*************************************************************"
+    script(src="/javascripts/subcommentwall.js")

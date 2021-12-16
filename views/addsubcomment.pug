@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+    h1 Add subcomment
+    form(action="" id="add-subcomment" method="POST")
+        label(for="motherid") MotherID 
+        input(type="text" name="motherid" id="motherid")
+        label(for="subcomment") Subcomment 
+        input(type="text" name="subcomment" id="subcomment")
+        button(class="btn" type="submit") Add subcomment
+    script(src="/javascripts/addsubcomment.js")

@@ -7,10 +7,10 @@ const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../auth/validateToken.js");
 const Comment = require("../models/Comment");
+const Subcomment = require("../models/Subcomment");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({storage});
-//const somefeature = require("../public/javascripts/commentwall");
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
@@ -24,10 +24,11 @@ router.get('/login', (req, res, next) => {
 
 /* Login info checking with jwt */
 router.post('/login', 
-  /*body("username").trim().escape(),
-  body("password").escape(),*/
   upload.none(),
   (req, res, next) => {
+    //Trying to find a user login in. If there is no user with the inserted
+    //info, login is failed. Otherwise password is compared and if it is a match
+    //user is signed with a token that grants access to creating posts and comments
     User.findOne({username: req.body.username}, (err, user) => {
       if(err) throw err;
       if(!user) {
@@ -40,6 +41,8 @@ router.post('/login',
               id: user._id,
               username: user.username
             }
+            //jsonwebtoken payload and the defined SECRET key is signed to a token
+            //which is valid for 10 minutes
             jwt.sign(
               jwtPayload,
               process.env.SECRET,
@@ -48,12 +51,8 @@ router.post('/login',
               },
               (err, token) => {
                 user.token = token;
-                console.log("TÄMÄ ON USER.TOKEN: " + user.token);
                 user.save();
-                //localStorage.setItem("auth_token", token);
-                console.log("This comes from /users/login POST");
                 res.json({success: true, token});
-                //return res.redirect("/");
               }
             );
           }
@@ -69,22 +68,23 @@ router.get('/register', (req, res, next) => {
 
 /* Route for saving the registration to the database */
 router.post('/register', 
-  /*body("username").isLength({min: 3}).trim().escape(),
-  body("password").isLength({min: 8}),*/
   upload.none(),
   (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
       return res.status(400).json({errors: errors.array()});
     }
+    //Trying to find a user, if the user exists the registering user is notified
     User.findOne({username: req.body.username}, (err, user) => {
       if(err) throw err;
       if(user) {
-        return res.status(403).json({username: "Username already in use."});
+        return res.status(403).json({username: "Username already in use. Please login."});
       } else {
+        //Hashing the password for safety reasons
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(req.body.password, salt, (err, hash) => {
             if(err) throw err;
+            //Setting user information and creating the user to the database
             User.create(
               {
               username: req.body.username,
@@ -93,8 +93,7 @@ router.post('/register',
               },
               (err, ok) => {
                 if(err) throw err;
-                //res.json({success: true});
-                return res.redirect("/users/login");
+                res.json({success: true});
               }
             );
           });
@@ -105,64 +104,55 @@ router.post('/register',
 
 /* Route for adding comments */
 router.post('/comment/add', validateToken, upload.none(), (req, res, next) => {
-  /*let token = localStorage.getItem("auth_token");
-  //token = somefeature.getToken();
-  console.log(token);
+  //Creating posts requires a token (the user must be logged in), this is checked 
+  //by validateToken function
 
-  if(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    var info = JSON.parse(jsonPayload);
-
-    console.log(info);
-  }*/
-
-  let nameinfo;
-
-  let commentslist = [];
-
-  console.log(commentslist);
-
-  let itemID = (commentslist.length+1).toString;
-  /*Comment.count({}, function(err, count) {
-    itemID = count;
-    return itemID
-  });
-  console.log(itemID);*/
-  
-  //let commentinput = document.createElement("textarea").setAttribute("id", "comment-input");
-
-  //Comment.deleteOne({ "username": "foobar4"});
+  //If user is logged in the inputs from the form is sent to this post route and 
+  //the post is created and stored in the database
   let newComment = Comment.create(
     {
-    username: req.body.username,
+    username: req.user.username,
     comment: req.body.comment
     },
     (err, ok) => {
       if(err) throw err;
-      //itemID = itemID + 1;
       return res.redirect("/content");
     }
   );
-  commentslist.push(newComment);
-  console.log(commentslist);
-  /*console.log("This is newComment: " + newComment);
-  commentslist.push(newComment);
-  console.log(commentslist);
-  return res.redirect("/content");*/
-
-
 });
 
 
-/* Route for add comment page */
+/* Route for add post page */
 router.get('/comment/add', (req, res, next) => {
-  console.log("this is req from /comment/add: " + req.value);
-  console.log("this is req.headers from there: " + req.headers);
+  //In here we render the "Add post" page
   res.render('addcomment');
+});
+
+
+/* GET content_data adding page. */
+router.post("/content_data/addsubcomment", validateToken, upload.none(), (req, res, next) => {
+  //Creating comments also requires a login which is again checked by the
+  //validateToken function.
+
+  //If user is logged in the inputs from the form is sent to this post route and
+  //the comment is created and stored in the database.
+  Subcomment.create(
+    {
+    motherID: req.body.motherID, //This is for specifying under which post is the comment
+    subcomment: req.body.subcomment,
+    username: req.user.username
+    },
+    (err, ok) => {
+      if(err) throw err;
+      return res.redirect("/content");
+    }
+  );
+})
+
+/* Route for add subcomment page */
+router.get('/content_data/add', (req, res, next) => {
+  //In here we render the add comment page
+  res.render('addsubcomment');
 });
 
 module.exports = router;

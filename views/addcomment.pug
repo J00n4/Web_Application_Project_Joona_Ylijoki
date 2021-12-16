@@ -1,11 +1,9 @@
 extends layout 
 
 block content 
-    h1 Add comment
+    h1 Add post
     form(action="" id="add-comment" method="POST")
-        label(for="username") Username 
-        input(type="text" name="username" id="username")
-        label(for="comment") Comment 
+        label(for="comment") Post
         input(type="text" name="comment" id="comment")
-        button(class="btn" type="submit") Add comment
+        button(class="btn" type="submit") Add Post
     script(src="/javascripts/addcomment.js")
