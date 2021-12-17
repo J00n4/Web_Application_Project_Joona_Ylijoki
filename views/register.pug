@@ -2,6 +2,7 @@ extends layout
 
 block content
     h1 Register
+    div(id="error" class="card-panel")
     form(action="" id="register-form" method="POST")
         label(for="username") Username 
         input(type="text" name="username" id="username" required)

@@ -23,8 +23,11 @@ function onSubmit(event) {
     })
     .then((response) => response.json())
     .then((data) => {
-        if(data) { //redirecting to login page after registration
-            window.location.href = "/users/login"
-        } 
+        //If username is taken we notify the user
+        if(data.username === "Username already in use. Please login.") {
+            document.getElementById("error").innerHTML = data.username;
+        } else {
+            window.location.href = "/users/login";
+        }
     })
 }
