@@ -62,6 +62,7 @@ function addToCommentWall(username, comment, id) {
 
     //This is the div for each post
     const postDiv = document.createElement("div");
+    postDiv.setAttribute("class", "postDiv");
 
     //Creating a div for the post and appending it to the main div
     const addCommentBtn = document.createElement("button");
@@ -70,6 +71,7 @@ function addToCommentWall(username, comment, id) {
     showCommentsBtn.setAttribute("id", id);
     const postCreator = document.createElement("p");
     const postText = document.createElement("p");
+    postText.setAttribute("class", "postText");
     const commentArea = document.createElement("textarea");
     commentArea.setAttribute("id", "comment-area-" + id);
     
@@ -81,8 +83,9 @@ function addToCommentWall(username, comment, id) {
     addCommentBtn.innerText = "Add comment";
     showCommentsBtn.innerText = "Show comments";
     postDiv.appendChild(addCommentBtn);
-    postDiv.appendChild(showCommentsBtn)
+    postDiv.appendChild(showCommentsBtn);
     container.appendChild(postDiv);
+    container.appendChild(document.createElement("br"));
 
     //Setting eventListeners to "Add comment" and "Show comments" buttons below every post on the
     //"Posts" page

@@ -5,7 +5,9 @@ block content
     //Comments for a specific post
     each subcomment, motherID in subcomments
             div(id="post")
+                br
                 p= "User:" + subcomment.username 
                 p= subcomment.subcomment 
-                p= "*************************************************************"
+                br
+            br
     script(src="/javascripts/subcommentwall.js")

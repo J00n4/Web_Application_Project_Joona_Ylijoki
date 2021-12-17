@@ -1,0 +1,61 @@
+/* In this css file we have some features modifying mainly the Posts page
+to make it look a little bit nicer. */
+body { /* Removing the horizontal scrollbar */
+    overflow-x: hidden;
+}
+
+#top {
+    background-color: lightgrey;
+    padding: 1em;
+}
+
+#post-container {
+    width: 100%;
+}
+
+.postDiv {
+    background-color: lightskyblue;
+    padding: 1em 1em 1em 1em;
+}
+
+h3 {
+    margin: 10px;
+}
+
+#submit {
+    margin: 5px;
+}
+
+#page {
+    padding: 1em;
+    margin: 0 0 1em 0;
+}
+
+.postText { /* Very long words might in some cases go through the side
+    of the page. Word-break prevents that from happening by cutting the word.*/
+    width: 100%;
+    word-break: break-all;
+}
+
+@media (max-width: 500px) { /* Some settings designed to get applied when using
+    for example mobile phone. */
+
+    body {
+        overflow-x: hidden;
+    }
+
+    main{
+        padding: 1em;
+        width: 100%;
+    }
+
+    #page {
+        width: 100%;
+        margin: 0 0 1em 0;
+    }
+
+    #post-container {
+        width: 100%;
+    }
+
+}

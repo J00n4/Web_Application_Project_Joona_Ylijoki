@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+#homepage {
+  overflow-x: hidden;
+}
+
+#post {
+  background-color: lightskyblue;
+}
